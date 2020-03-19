@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Threading;
 using ConsoleEngine;
+using System.Collections.Generic;
 
 namespace SnakeConsole
 {
     class Program
     {
-        bool gameOver = false;
-        
-
-
-
+        static bool gameOver = false;
         static void Main(string[] args)
         {
-            Engine.Init(20, 20,2);
+            Engine.Init(30,20,2,ConsoleColor.Blue,"XD");
             Console.ReadKey();
-            Snake snake = new Snake();
+
         }
     }
 }

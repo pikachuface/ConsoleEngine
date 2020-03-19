@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace ConsoleEngine
 {
 
-    abstract class GameObject
+    abstract class GameObject : IDisposable
     {
         /// <summary>
         /// Current position of the GameObject.
@@ -29,7 +29,7 @@ namespace ConsoleEngine
         /// <param name="color">Determines the color of the GameObject.</param>
         /// <param name="position">Determines the postion of the GameObject.</param>
         /// <param name="checkPosOverflow">If the gameOject will move beyond the map borders 
-        /// <br>it will be teleported back on the other side of the map</br></param>
+        /// <br>it will be teleported back on the other side of the map.</br></param>
         public GameObject(ConsoleColor color, Position position, bool checkPosOverflow = false)
         {
             this.CheckPosOverflow = checkPosOverflow;
@@ -43,7 +43,7 @@ namespace ConsoleEngine
         /// </summary>
         /// <param name="position">Determines the postion of the GameObject.</param>
         /// /// <param name="checkPosOverflow">If the gameOject will move beyond the map borders 
-        /// <br>it will be teleported back on the other side of the map</br></param>
+        /// <br>it will be teleported back on the other side of the map.</br></param>
         public GameObject(Position position, bool checkPosOverflow = false)
         {
             this.CheckPosOverflow = checkPosOverflow;
@@ -53,10 +53,10 @@ namespace ConsoleEngine
 
 
         /// <summary>
-        /// Creates new GameObject
+        /// Creates new GameObject.
         /// </summary>
         /// <param name="checkPosOverflow">If the gameOject will move beyond the map borders 
-        /// <br>it will be teleported back on the other side of the map</br></param>
+        /// <br>it will be teleported back on the other side of the map.</br></param>
         public GameObject(bool checkPosOverflow = false)
         {
             this.CheckPosOverflow = checkPosOverflow;
@@ -65,6 +65,21 @@ namespace ConsoleEngine
         }
         #endregion
 
+
+        public void Dispose()
+        {
+            if (Pos.Y >= Engine.BorderThicknes && Pos.Y <= Engine.mapHeight + Engine.BorderThicknes && Pos.X >= Engine.BorderThicknes && Pos.Y <= Engine.mapHeight + Engine.BorderThicknes)
+            {
+                //Deletes old position
+                Console.SetCursorPosition(2 * (Engine.BorderThicknes + lastPos.X), Engine.BorderThicknes + lastPos.Y);
+
+                Console.BackgroundColor = Engine.defaultColor;
+                Console.ForegroundColor = Engine.defaultColor;
+
+                Console.Write("  ");
+
+            }
+        }
 
 
         #region Movement
@@ -138,6 +153,8 @@ namespace ConsoleEngine
         /// <param name="deleteOldOne">Decides if the old position will be deleted.</param>
         public void Render(bool deleteOldOne = true)
         {
+
+
             if (lastPos.Y >= Engine.BorderThicknes && lastPos.Y <= Engine.mapHeight + Engine.BorderThicknes && lastPos.X >= Engine.BorderThicknes && lastPos.Y <= Engine.mapHeight + Engine.BorderThicknes)
             {
                 //Deletes old position
@@ -171,6 +188,7 @@ namespace ConsoleEngine
             this.Render(false);
         }
 
+
     }
 
 
@@ -180,15 +198,58 @@ namespace ConsoleEngine
     /// </summary>
     abstract class GameObjects
     {
-        private List<ConsoleColor> BodyColor;
-        public List<Position> BodyPosition;
+
+        public List<Position> Positions { get; private set; }
+        private List<Position> LastPositions;
+        public List<ConsoleColor> BodyColors { get; private set; }
+        bool checkPosOverflow;
 
 
-        GameObjects(ConsoleColor color, Position position)
+        #region ctors
+        /// <summary>
+        /// Crates new colection of GameObjects
+        /// </summary>
+        /// <param name="color">Determines the color of first the GameObject.</param>
+        /// <param name="position">Determines the first postion of the GameObject.</param>
+        /// <param name="checkPosOverflow">If the any GameObjects will move beyond the map borders 
+        /// <br>it will be teleported back on the other side of the map.</br></param>
+        GameObjects(ConsoleColor color, Position position, bool checkPosOverflow = false)
         {
+            this.checkPosOverflow = checkPosOverflow;
 
+            Positions = new List<Position>();
+            BodyColors = new List<ConsoleColor>();
 
+            Positions.Add(position);
+            BodyColors.Add(color);
         }
+
+        GameObjects(Position position, bool checkPosOverflow = false)
+        {
+            this.checkPosOverflow = checkPosOverflow;
+
+            Positions = new List<Position>();
+            BodyColors = new List<ConsoleColor>();
+
+            Positions.Add(position);
+            BodyColors.Add(Engine.BorderColor);
+        }
+
+        GameObjects(List<ConsoleColor> colors, List<Position> positions, bool checkPosOverflow = false)
+        {
+            this.checkPosOverflow = checkPosOverflow;
+
+            if (colors.Count == positions.Count)
+            {
+                this.BodyColors = colors;
+                this.Positions = positions;
+            }
+            else
+            {
+                throw new ArgumentException("Colors and positions must have the same length.", "positions & colors");
+            }
+        }
+        #endregion
 
         #region addBodypart
         /// <summary>
@@ -198,8 +259,8 @@ namespace ConsoleEngine
         /// <param name="position">Decides the position.</param>
         public void AddBodyPart(ConsoleColor color, Position position)
         {
-            BodyColor.Add(color);
-            BodyPosition.Add(position);
+            BodyColors.Add(color);
+            Positions.Add(position);
         }
 
 
@@ -211,8 +272,8 @@ namespace ConsoleEngine
         /// <param name="insertIndex">Decides the position in the list.</param>
         public void AddBodyPart(ConsoleColor color, Position position, int insertIndex)
         {
-            BodyColor.Insert(insertIndex, color);
-            BodyPosition.Insert(insertIndex, position);
+            BodyColors.Insert(insertIndex, color);
+            Positions.Insert(insertIndex, position);
         }
         #endregion
 

@@ -8,11 +8,14 @@ namespace SnakeConsole
     class Program
     {
         static bool gameOver = false;
+
         static void Main(string[] args)
         {
-            Engine.Init(30,20,2,ConsoleColor.Blue,"XD");
+            Engine.Init(20,20,2,ConsoleColor.Red);
             Console.ReadKey();
-
+            Console.ReadKey();
         }
+
+
     }
 }

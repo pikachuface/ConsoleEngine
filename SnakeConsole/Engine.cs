@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 
 namespace ConsoleEngine
@@ -29,7 +31,13 @@ namespace ConsoleEngine
         /// </summary>
         static public ConsoleColor defaultColor = ConsoleColor.Black;
 
-        
+
+        static private List<Action> ToBeRendered = new List<Action>();
+        static public Task rendering { get; private set; }
+        static public Task keyRegistering { get; private set; }
+        static public bool isRendering { get; private set; }
+
+
 
         #region Init
 
@@ -141,12 +149,14 @@ namespace ConsoleEngine
             mapHeight = _mapHeight;
             mapWidth = _mapWidth;
             Console.CursorVisible = false;
-            Console.SetWindowSize(2*(_mapWidth + (2 * BorderThicknes)) + 2, _mapHeight + (2 * BorderThicknes) + 1);
-            Console.SetBufferSize(2 *( _mapWidth + (2 * BorderThicknes)) + 3, _mapHeight + (2 * BorderThicknes) + 2);
+            Console.SetWindowSize(2 * (_mapWidth + (2 * BorderThicknes)) + 2, _mapHeight + (2 * BorderThicknes) + 1);
+            Console.SetBufferSize(2 * (_mapWidth + (2 * BorderThicknes)) + 3, _mapHeight + (2 * BorderThicknes) + 2);
             DrawBorder();
+            rendering = Task.Run(Render);
         }
 
         #endregion
+
 
         /// <summary>
         /// Draws the border of the map.
@@ -172,6 +182,7 @@ namespace ConsoleEngine
             ResetColor();
         }
 
+
         /// <summary>
         /// Sets the color for the new output.
         /// </summary>
@@ -182,16 +193,77 @@ namespace ConsoleEngine
             Console.BackgroundColor = color;
         }
 
+
         /// <summary>
         /// Restart the color of the new output to the default color.
         /// <example>
-        /// Which is found in: <c>Engine.defaultColor</c>
+        /// Which is found in: <c>Engine.defaultColor()</c>
         /// </example>
         /// </summary>
         static public void ResetColor()
         {
             Console.ForegroundColor = defaultColor;
             Console.BackgroundColor = defaultColor;
+        }
+
+
+        /// <summary>
+        /// Stops rendering the application.
+        /// </summary>
+        /// <param name="flushBuffer">If <c>true</c> the Engine will clear the screenbuffer</param>
+        static public void StopRendering(bool flushBuffer = false)
+        {
+            if (isRendering)
+            {
+                isRendering = false;
+                rendering.Wait();
+                if (flushBuffer)
+                {
+                    Console.Clear();
+                }
+            }
+        }
+
+        static public void AddRenderMethod(Action _render)
+        {
+            ToBeRendered.Add(_render);
+        }
+
+        static public void DeleteRenderMethod(Action _render)
+        {
+            for (int i = 0; i < ToBeRendered.Count; i++)
+            {
+                if (_render == ToBeRendered[i])
+                {
+                    ToBeRendered.RemoveAt(i);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Flushes the whole sceen buffer and starts rendering.
+        /// </summary>
+        static public void StartRendering()
+        {
+            if (!isRendering)
+            {
+                isRendering = true;
+                Console.Clear();
+                DrawBorder();
+                rendering = Task.Run(Render);
+            }
+        }
+
+        static private void Render()
+        {
+            while (isRendering)
+            {
+                foreach (var gameObjectRender in ToBeRendered)
+                {
+                    gameObjectRender.Invoke();
+                }
+            }
         }
 
     }

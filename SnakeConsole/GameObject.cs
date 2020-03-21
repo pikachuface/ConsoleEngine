@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 
 namespace ConsoleEngine
@@ -35,6 +36,7 @@ namespace ConsoleEngine
             this.CheckPosOverflow = checkPosOverflow;
             this.color = color;
             this.Pos = position;
+            Engine.AddRenderMethod(this.Render);
         }
 
 
@@ -49,6 +51,7 @@ namespace ConsoleEngine
             this.CheckPosOverflow = checkPosOverflow;
             this.color = Engine.BorderColor;
             this.Pos = position;
+            Engine.AddRenderMethod(this.Render);
         }
 
 
@@ -62,12 +65,14 @@ namespace ConsoleEngine
             this.CheckPosOverflow = checkPosOverflow;
             this.color = Engine.BorderColor;
             this.Pos = new Position(0, 0);
+            Engine.AddRenderMethod(this.Render);
         }
         #endregion
 
 
         public void Dispose()
         {
+            Engine.DeleteRenderMethod(this.Render);
             if (Pos.Y >= Engine.BorderThicknes && Pos.Y <= Engine.mapHeight + Engine.BorderThicknes && Pos.X >= Engine.BorderThicknes && Pos.Y <= Engine.mapHeight + Engine.BorderThicknes)
             {
                 //Deletes old position
@@ -77,7 +82,6 @@ namespace ConsoleEngine
                 Console.ForegroundColor = Engine.defaultColor;
 
                 Console.Write("  ");
-
             }
         }
 
@@ -151,29 +155,28 @@ namespace ConsoleEngine
         /// Renders the GameObject.
         /// </summary>
         /// <param name="deleteOldOne">Decides if the old position will be deleted.</param>
-        public void Render(bool deleteOldOne = true)
+        private void Render()
         {
-
-
-            if (lastPos.Y >= Engine.BorderThicknes && lastPos.Y <= Engine.mapHeight + Engine.BorderThicknes && lastPos.X >= Engine.BorderThicknes && lastPos.Y <= Engine.mapHeight + Engine.BorderThicknes)
+            if (Engine.isRendering)
             {
-                //Deletes old position
-                if (deleteOldOne)
+                if (lastPos.Y >= Engine.BorderThicknes && lastPos.Y <= Engine.mapHeight + Engine.BorderThicknes && lastPos.X >= Engine.BorderThicknes && lastPos.Y <= Engine.mapHeight + Engine.BorderThicknes)
                 {
+                    //Deletes old position
                     Console.SetCursorPosition(2 * (Engine.BorderThicknes + lastPos.X), Engine.BorderThicknes + lastPos.Y);
 
                     Console.BackgroundColor = Engine.defaultColor;
                     Console.ForegroundColor = Engine.defaultColor;
 
                     Console.Write("  ");
+
+
+                    //Prints new position
+                    Console.SetCursorPosition(2 * (Engine.BorderThicknes + Pos.X), Engine.BorderThicknes + Pos.Y);
+                    Console.BackgroundColor = color;
+                    Console.ForegroundColor = color;
+
+                    Console.Write("##");
                 }
-
-                //Prints new position
-                Console.SetCursorPosition(2 * (Engine.BorderThicknes + Pos.X), Engine.BorderThicknes + Pos.Y);
-                Console.BackgroundColor = color;
-                Console.ForegroundColor = color;
-
-                Console.Write("##");
             }
 
 
@@ -185,7 +188,7 @@ namespace ConsoleEngine
         public void ChangeColor(ConsoleColor newColor)
         {
             this.color = newColor;
-            this.Render(false);
+            this.Render();
         }
 
 
@@ -248,6 +251,7 @@ namespace ConsoleEngine
             {
                 throw new ArgumentException("Colors and positions must have the same length.", "positions & colors");
             }
+            Engine.AddRenderMethod(this.Render);
         }
         #endregion
 
@@ -276,6 +280,12 @@ namespace ConsoleEngine
             Positions.Insert(insertIndex, position);
         }
         #endregion
+
+        //Must complete
+        private void Render()
+        {
+            
+        }
 
     }
 }

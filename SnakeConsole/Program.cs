@@ -11,9 +11,17 @@ namespace SnakeConsole
 
         static void Main(string[] args)
         {
-            Engine.Init(20,20,2,ConsoleColor.Red);
+            Engine.Init(20,20,4,ConsoleColor.Red);
+            Snake snake = new Snake(new Position(1, 1), ConsoleColor.Blue);
+            Snake test = new Snake(new Position(4, 4), ConsoleColor.Green);
             Console.ReadKey();
+            snake.MoveTo(3, 1);
+            test.MoveTo(4, 1);
             Console.ReadKey();
+            snake.MoveTo(5, 1);
+            test.MoveTo(8, 1);
+            Console.ReadKey();
+            
         }
 
 

@@ -36,6 +36,7 @@ namespace ConsoleEngine
         static public Task rendering { get; private set; }
         static public Task keyRegistering { get; private set; }
         static public bool isRendering { get; private set; }
+        static private bool RenderLock = false;
 
 
 
@@ -153,6 +154,7 @@ namespace ConsoleEngine
             Console.SetBufferSize(2 * (_mapWidth + (2 * BorderThicknes)) + 3, _mapHeight + (2 * BorderThicknes) + 2);
             DrawBorder();
             rendering = Task.Run(Render);
+            isRendering = true;
         }
 
         #endregion
@@ -224,21 +226,6 @@ namespace ConsoleEngine
             }
         }
 
-        static public void AddRenderMethod(Action _render)
-        {
-            ToBeRendered.Add(_render);
-        }
-
-        static public void DeleteRenderMethod(Action _render)
-        {
-            for (int i = 0; i < ToBeRendered.Count; i++)
-            {
-                if (_render == ToBeRendered[i])
-                {
-                    ToBeRendered.RemoveAt(i);
-                }
-            }
-        }
 
 
         /// <summary>
@@ -257,11 +244,31 @@ namespace ConsoleEngine
 
         static private void Render()
         {
-            while (isRendering)
+            if (!RenderLock)
             {
-                foreach (var gameObjectRender in ToBeRendered)
+                RenderLock = true;
+                while (isRendering)
                 {
-                    gameObjectRender.Invoke();
+                    foreach (var gameObjectRender in ToBeRendered)
+                    {
+                        gameObjectRender.Invoke();
+                    }
+                }
+                RenderLock = false;
+            }
+        }
+        static internal void AddRenderMethod(Action _render)
+        {
+            ToBeRendered.Add(_render);
+        }
+
+        static internal void DeleteRenderMethod(Action _render)
+        {
+            for (int i = 0; i < ToBeRendered.Count; i++)
+            {
+                if (_render == ToBeRendered[i])
+                {
+                    ToBeRendered.RemoveAt(i);
                 }
             }
         }

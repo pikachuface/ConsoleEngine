@@ -6,8 +6,7 @@ namespace SnakeConsole
     class Snake : GameObject
     {
 
-
-        public Snake()
+        public Snake(Position pos, ConsoleColor color) : base(pos, color, true)
         {
 
 

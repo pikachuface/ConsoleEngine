@@ -150,8 +150,11 @@ namespace ConsoleEngine
             mapHeight = _mapHeight;
             mapWidth = _mapWidth;
             Console.CursorVisible = false;
-            Console.SetWindowSize(2 * (_mapWidth + (2 * BorderThicknes)) + 2, _mapHeight + (2 * BorderThicknes) + 1);
-            Console.SetBufferSize(2 * (_mapWidth + (2 * BorderThicknes)) + 3, _mapHeight + (2 * BorderThicknes) + 2);
+            if (Environment.OSVersion.Platform != PlatformID.Unix)
+            {
+                Console.SetWindowSize(2 * (_mapWidth + (2 * BorderThicknes)) + 2, _mapHeight + (2 * BorderThicknes) + 1);
+                Console.SetBufferSize(2 * (_mapWidth + (2 * BorderThicknes)) + 3, _mapHeight + (2 * BorderThicknes) + 2);
+            }
             DrawBorder();
             rendering = Task.Run(Render);
             isRendering = true;

@@ -1,7 +1,5 @@
 [Dd]ebug/
 [Rr]elease/
-*.sln
 bin/
 obj/
 .vs/
-*.csproj

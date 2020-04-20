@@ -21,7 +21,6 @@ namespace SnakeConsole
             snake.MoveTo(5, 1);
             test.MoveTo(8, 1);
             Console.ReadKey();
-            
         }
 
 

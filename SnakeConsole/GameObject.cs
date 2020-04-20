@@ -145,7 +145,7 @@ namespace ConsoleEngine
         }
         #endregion
 
-        #region rendering
+        #region Rendering
 
         /// <summary>
         /// Renders the GameObject.
@@ -227,6 +227,55 @@ namespace ConsoleEngine
             this.Render();
         }
 
+        #region Collision
+
+        /// <summary>
+        /// Checks if the gameObject is colliding with something.
+        /// </summary>
+        /// <param name="gameObject">GameObject checks if it is colliding with this parametr.</param>
+        /// <returns></returns>
+        public bool IsColliding(GameObject gameObject)
+        {
+            return this.Pos == gameObject.Pos;
+        }
+
+        /// <summary>
+        /// Checks if the gameObject is colliding with something.
+        /// </summary>
+        /// <param name="position">GameObject checks if it is colliding with this parametr.</param>
+        /// <returns></returns>
+        public bool IsColliding(Position position)
+        {
+            return this.Pos == position;
+        }
+
+        /// <summary>
+        /// Checks if the gameObject is colliding with something.
+        /// </summary>
+        /// <param name="gameObjects">GameObject checks if it is colliding with this parametr.</param>
+        /// <returns></returns>
+        public bool IsColliding(GameObjects gameObjects)
+        {
+            if (this.Pos.X >= gameObjects.CollisionBox.posX && this.Pos.Y >= gameObjects.CollisionBox.posY)
+            {
+                if (this.Pos.X <= gameObjects.CollisionBox.posX+gameObjects.CollisionBox.Width && this.Pos.Y <= gameObjects.CollisionBox.posY + gameObjects.CollisionBox.Height)
+                {
+                    foreach (var bodyPartPosition in gameObjects.Positions)
+                    {
+                        if (this.Pos == bodyPartPosition)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+
+        }
+
+
+        #endregion
+
 
     }
 
@@ -235,13 +284,16 @@ namespace ConsoleEngine
     /// This abstarct class can contain multiple GameObjects.
     /// <br>Good for multi cell bodies, like one of an snake.</br>
     /// </summary>
-    abstract class GameObjects
+    abstract class GameObjects : IDisposable
     {
 
         public List<Position> Positions { get; private set; }
-        private List<Position> LastPositions;
         public List<ConsoleColor> BodyColors { get; private set; }
-        bool checkPosOverflow;
+
+        public CollisionBox CollisionBox { get; private set; }
+
+        private List<Position> LastPositions;
+        private bool checkPosOverflow;
 
 
         #region ctors
@@ -263,6 +315,12 @@ namespace ConsoleEngine
             BodyColors.Add(color);
         }
 
+        /// <summary>
+        /// Crates new colection of GameObjects
+        /// </summary>
+        /// <param name="position">Determines the first postion of the GameObject.</param>
+        /// <param name="checkPosOverflow">If the any GameObjects will move beyond the map borders 
+        /// <br>it will be teleported back on the other side of the map.</br></param>
         GameObjects(Position position, bool checkPosOverflow = false)
         {
             this.checkPosOverflow = checkPosOverflow;
@@ -273,7 +331,13 @@ namespace ConsoleEngine
             Positions.Add(position);
             BodyColors.Add(Engine.BorderColor);
         }
-
+        /// <summary>
+        /// Crates new colection of GameObjects
+        /// </summary>
+        /// <param name="colors">Determines the color of every GameObject.</param>
+        /// <param name="positions">Determines the postion of every GameObject.</param>
+        /// <param name="checkPosOverflow">If the any GameObjects will move beyond the map borders 
+        /// <br>it will be teleported back on the other side of the map.</br></param>
         GameObjects(List<ConsoleColor> colors, List<Position> positions, bool checkPosOverflow = false)
         {
             this.checkPosOverflow = checkPosOverflow;
@@ -290,6 +354,11 @@ namespace ConsoleEngine
             Engine.AddRenderMethod(this.Render);
         }
         #endregion
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
 
         #region addBodypart
         /// <summary>
@@ -323,5 +392,12 @@ namespace ConsoleEngine
 
         }
 
+        //Needs to be automatic
+        private void SetCollisionBox()
+        {
+            
+        }
+
+        
     }
 }

@@ -46,7 +46,7 @@ namespace ConsoleEngine
         /// This method will start Engine
         /// </summary>
         /// <param name="_mapWidth">Sets width of the map</param>
-        /// <param name="_mapHeight">Sets heigh of the map</param>
+        /// <param name="_mapHeight">Sets height of the map.</param>
         static public void Init(int _mapWidth, int _mapHeight)
         {
             BorderThicknes = 1;
@@ -58,7 +58,7 @@ namespace ConsoleEngine
         /// This method will start Engine.
         /// </summary>
         /// <param name="_mapWidth">Sets width of the map.</param>
-        /// <param name="_mapHeight">Sets heigh of the map.</param>
+        /// <param name="_mapHeight">Sets height of the map.</param>
         /// <param name="_borderThicknes">Sets thicknes of the border around the map.</param>
         static public void Init(int _mapWidth, int _mapHeight, int _borderThicknes)
         {
@@ -71,7 +71,7 @@ namespace ConsoleEngine
         /// This method will start Engine.
         /// </summary>
         /// <param name="_mapWidth">Sets width of the map.</param>
-        /// <param name="_mapHeight">Sets heigh of the map.</param>
+        /// <param name="_mapHeight">Sets height of the map.</param>
         /// <param name="title">Sets the label of the console app.</param>
         static public void Init(int _mapWidth, int _mapHeight, string title)
         {
@@ -85,7 +85,7 @@ namespace ConsoleEngine
         /// This method will start Engine.
         /// </summary>
         /// <param name="_mapWidth">Sets width of the map.</param>
-        /// <param name="_mapHeight">Sets heigh of the map.</param>
+        /// <param name="_mapHeight">Sets height of the map.</param>
         /// <param name="_borderThicknes">Sets thicknes of the border around the map.</param>
         /// <param name="title">Sets the label of the console app.</param>
         static public void Init(int _mapWidth, int _mapHeight, int _borderThicknes, string title)
@@ -99,7 +99,7 @@ namespace ConsoleEngine
         /// This method will start Engine.
         /// </summary>
         /// <param name="_mapWidth">Sets width of the map.</param>
-        /// <param name="_mapHeight">Sets heigh of the map.</param>
+        /// <param name="_mapHeight">Sets height of the map.</param>
         /// <param name="_borderThicknes">Sets thicknes of the border around the map.</param>
         /// <param name="_borderColor">Sets the color of the map border.</param>
         /// <param name="title">Sets the label of the console app.</param>
@@ -115,7 +115,7 @@ namespace ConsoleEngine
         /// This method will start Engine.
         /// </summary>
         /// <param name="_mapWidth">Sets width of the map.</param>
-        /// <param name="_mapHeight">Sets heigh of the map.</param>
+        /// <param name="_mapHeight">Sets height of the map.</param>
         /// <param name="_borderThicknes">Sets thicknes of the border around the map.</param>
         /// <param name="_borderColor">Sets the color of the map border.</param>
         /// <param name="title">Sets the label of the console app.</param>
@@ -130,7 +130,7 @@ namespace ConsoleEngine
         /// This method will start Engine.
         /// </summary>
         /// <param name="_mapWidth">Sets width of the map.</param>
-        /// <param name="_mapHeight">Sets heigh of the map.</param>
+        /// <param name="_mapHeight">Sets height of the map.</param>
         /// <param name="_borderColor">Sets the color of the map border.</param>
         static public void Init(int _mapWidth, int _mapHeight, ConsoleColor _borderColor)
         {
@@ -144,13 +144,13 @@ namespace ConsoleEngine
         /// Base method for the <c>Engine.Init()</c> method.
         /// </summary>
         /// <param name="_mapWidth">Sets width of the map.</param>
-        /// <param name="_mapHeight">Sets heigh of the map.</param>
+        /// <param name="_mapHeight">Sets height of the map.</param>
         static private void BaseInit(int _mapWidth, int _mapHeight)
         {
             mapHeight = _mapHeight;
             mapWidth = _mapWidth;
             Console.CursorVisible = false;
-            if (Environment.OSVersion.Platform != PlatformID.Unix)
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
             {
                 Console.SetWindowSize(2 * (_mapWidth + (2 * BorderThicknes)) + 2, _mapHeight + (2 * BorderThicknes) + 1);
                 Console.SetBufferSize(2 * (_mapWidth + (2 * BorderThicknes)) + 3, _mapHeight + (2 * BorderThicknes) + 2);

@@ -260,6 +260,7 @@ namespace ConsoleEngine
                 RenderLock = false;
             }
         }
+
         static internal void AddRenderMethod(Action _render)
         {
             ToBeRendered.Add(_render);

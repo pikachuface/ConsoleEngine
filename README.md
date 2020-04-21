@@ -4,10 +4,10 @@
 The framework runs on [.NET Core 3.1](https://docs.microsoft.com/en-us/dotnet/core/about) so if you would like to use it, you will need to [download](https://dotnet.microsoft.com/download) the .NET Core. 
 
 **These files are part of the framework:**
-1. [Engine.cs](../SnakeConsole/Engine.cs)
-2. [GameObject.cs](../SnakeConsole/GameObject.cs)
-3. [Position.cs](../SnakeConsole/Position.cs)
-4. [CollisionBox.cs](../SnakeConsole/CollisionBox.cs)
+1. [Engine.cs](https://github.com/pikachuface/ConsoleEngine/blob/master/SnakeConsole/Engine.cs)
+2. [GameObject.cs](https://github.com/pikachuface/ConsoleEngine/blob/master/SnakeConsole/GameObject.cs)
+3. [Position.cs](https://github.com/pikachuface/ConsoleEngine/blob/master/SnakeConsole/Position.cs)
+4. [CollisionBox.cs](https://github.com/pikachuface/ConsoleEngine/blob/master/SnakeConsole/CollisionBox.cs)
 
 Rest is just for example.
 
